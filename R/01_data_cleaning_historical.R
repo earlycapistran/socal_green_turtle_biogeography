@@ -1,25 +1,26 @@
-# DATA PREPARATION
-# Fixing data classes and making .rsv for cleaning and wrangling
+# DATA CLEANING
 
 # Load data and packages
-raw_data <- read.csv("./data/raw/raw_data_historical.csv")
-library("lubridate")
-library("dplyr")
+raw_data <- readRDS("./data/raw/raw_historical_data.rds")
+library(dplyr)
 
-# View data
-str(raw_data)
-head(raw_data)
+# Clean up data with mixed characters and numbers -----------------
 
-# Fix data classes ---------------
+# Starting with number of turtles: generate placeholder for "cargo" using
+# mean value of reported shipments
 
-# Convert to dates
-raw_data$fulldate <- ymd(raw_data$fulldate)
+# Make vector with only numeric values
+num_turtles_numeric <- as.numeric(raw_data$num_turtles) %>% 
+  na.omit()
 
-# Convert to numeric 
-raw_data$p_number <- as.numeric(raw_data$p_number)
+# Cut off based on smallest shipment
+cargo_values <- (num_turtles_numeric[num_turtles_numeric >= 17]) 
+mean_cargo <- mean(cargo_values)
 
-# Convert to factors
-raw_data <-raw_data %>% 
-  mutate(across(c(species, spp_id, location, location_certainty, habitat), 
-                as.factor))
-
+# Replace "cargo" with mean values and "not reported" with "NA"
+raw_data <- raw_data %>% 
+  mutate(num_turtles_numeric = ifelse(
+    num_turtles == "cargo", mean_cargo, num_turtles))%>% 
+  mutate(num_turtles_numeric = ifelse(
+    num_turtles_numeric == "not_reported", NA, num_turtles_numeric)) %>% 
+  mutate(num_turtles_numeric = as.numeric(num_turtles_numeric))
