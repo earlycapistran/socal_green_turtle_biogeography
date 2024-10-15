@@ -29,9 +29,9 @@ raw_data <- raw_data %>%
 
 # Add NAs to weight and length, and convert weight to numeric
 raw_data <- raw_data %>% 
-  mutate(weight = ifelse(weight == "not_reported", NA, weight)) %>% 
-  mutate(weight = as.numeric(weight)) %>% 
-  mutate(weight_kg = round(weight * 0.45359237, 2)) # Convert to kg
+  mutate(weight_lb = ifelse(weight_lb == "not_reported", NA, weight_lb)) %>% 
+  mutate(weight_lb = as.numeric(weight_lb)) %>% 
+  mutate(weight_kg = round(weight_lb * 0.45359237, 2)) # Convert to kg
 
 # For length, convert feet to cm
 raw_data <- raw_data %>% 

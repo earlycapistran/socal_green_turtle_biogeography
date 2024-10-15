@@ -28,5 +28,10 @@ raw_data <- raw_data %>%
   rename(length_ft_inches = length) %>% 
   rename(weight_lb = weight)
 
+# Make a column for year
+raw_data <- raw_data %>% 
+  mutate(year = format(as.Date(fulldate, format="%Y/%m/%d"),"%Y"))
+
+
 # Save as .rds
 saveRDS(raw_data, "./data/raw/raw_historical_data.rds")
