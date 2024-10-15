@@ -43,7 +43,7 @@ raw_data <- raw_data %>%
 raw_data <- raw_data %>% 
   # 0s as placeholders for missing values
   mutate(length = ifelse(length == "not_reported", "0'0", length)) %>% 
-  #mutate(length = gsub('["]', '', length)) # Remove inch symbol
+  mutate(length = gsub('["]', '', length)) # Remove inch symbol
 
 length_df <- as.data.frame(raw_data$length)
 
