@@ -1,0 +1,25 @@
+# DATA PREPARATION
+# Fixing data classes and making .rsv for cleaning and wrangling
+
+# Load data and packages
+raw_data <- read.csv("./data/raw/raw_data_historical.csv")
+library("lubridate")
+library("dplyr")
+
+# View data
+str(raw_data)
+head(raw_data)
+
+# Fix data classes ---------------
+
+# Convert to dates
+raw_data$fulldate <- ymd(raw_data$fulldate)
+
+# Convert to numeric 
+raw_data$p_number <- as.numeric(raw_data$p_number)
+
+# Convert to factors
+raw_data <-raw_data %>% 
+  mutate(across(c(species, spp_id, location, location_certainty, habitat), 
+                as.factor))
+
