@@ -6,12 +6,6 @@ library(dplyr)
 library(measurements)
 library(tidyr)
 
-# Function to convert feet to cm -----------------------------
-ft_inch <- function(str_ft_inch){
-  elem <- as.integer(unlist(strsplit(str_ft_inch, "'")))
-  inch <- elem[1]*12 + elem[2]
-}
-
 # Clean up data with mixed characters and numbers -----------------
 # Starting with number of turtles: generate placeholder for "cargo" using
 # mean value of reported shipments
