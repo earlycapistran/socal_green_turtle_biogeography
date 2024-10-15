@@ -56,3 +56,8 @@ length_df <- raw_data %>% # Wrangle length to cm in a separate dataframe
 raw_data <- raw_data %>% 
   mutate(length_cm = length_df$length_cm) %>%
   mutate(length = ifelse(length== "0'0", NA, length)) # Remove placeholder 0s
+
+# Save ------------------------------------------------
+
+write.csv(raw_data, "./data/processed/full_processed_data_historical")
+saveRDS(raw_data, "./data/processed/full_processed_data_historical.rds")
