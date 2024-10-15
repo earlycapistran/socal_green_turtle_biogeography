@@ -36,22 +36,26 @@ raw_data <- raw_data %>%
 # For length, convert feet to cm
 raw_data <- raw_data %>% 
   # 0s as placeholders for missing values
-  mutate(length = ifelse(length == "not_reported", "0'0", length)) %>% 
-  mutate(length = gsub('["]', '', length)) # Remove inch symbol
+  mutate(length_ft_inches = ifelse(length_ft_inches == "not_reported", 
+                                   "0'0", 
+                                   length_ft_inches)) %>% 
+  mutate(length_ft_inches = gsub('["]', '', length_ft_inches)) # Remove inch symbol
 
 length_df <- raw_data %>% # Wrangle length to cm in a separate dataframe
-  select(length) %>% 
+  select(length_ft_inches) %>% 
   # Make separate columns for feet and inches, then convert to cm
-  separate(length, into = c('feet', 'inches'), "'", convert = TRUE) %>% 
+  separate(length_ft_inches, into = c('feet', 'inches'), "'", convert = TRUE) %>% 
   mutate(length_cm = (12*feet + inches)*2.54) %>% 
   mutate(length_cm = ifelse(length_cm == 0, NA, length_cm)) # remove placeholder 0s
 
 # Add to the main dataframe
 raw_data <- raw_data %>% 
   mutate(length_cm = length_df$length_cm) %>%
-  mutate(length = ifelse(length== "0'0", NA, length)) # Remove placeholder 0s
+  mutate(length_ft_inches = ifelse(length_ft_inches == "0'0", 
+                                   NA, 
+                                   length_ft_inches)) # Remove placeholder 0s
 
 # Save ------------------------------------------------
-
 write.csv(raw_data, "./data/processed/full_processed_data_historical")
 saveRDS(raw_data, "./data/processed/full_processed_data_historical.rds")
+
