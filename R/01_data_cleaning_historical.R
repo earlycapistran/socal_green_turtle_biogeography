@@ -1,11 +1,18 @@
 # DATA CLEANING
 
-# Load data and packages
+# Load data and packages -----------------------------------
 raw_data <- readRDS("./data/raw/raw_historical_data.rds")
 library(dplyr)
+library(measurements)
+library(tidyr)
+
+# Function to convert feet to cm -----------------------------
+ft_inch <- function(str_ft_inch){
+  elem <- as.integer(unlist(strsplit(str_ft_inch, "'")))
+  inch <- elem[1]*12 + elem[2]
+}
 
 # Clean up data with mixed characters and numbers -----------------
-
 # Starting with number of turtles: generate placeholder for "cargo" using
 # mean value of reported shipments
 
@@ -24,3 +31,20 @@ raw_data <- raw_data %>%
   mutate(num_turtles_numeric = ifelse(
     num_turtles_numeric == "not_reported", NA, num_turtles_numeric)) %>% 
   mutate(num_turtles_numeric = as.numeric(num_turtles_numeric))
+
+
+# Add NAs to weight and length, and convert weight to numeric
+raw_data <- raw_data %>% 
+  mutate(weight = ifelse(weight == "not_reported", NA, weight)) %>% 
+  mutate(weight = as.numeric(weight)) %>% 
+  mutate(weight_kg = round(weight * 0.45359237, 2)) # Convert to kg
+
+# For length, convert feet to cm
+raw_data <- raw_data %>% 
+  # 0s as placeholders for missing values
+  mutate(length = ifelse(length == "not_reported", "0'0", length)) %>% 
+  #mutate(length = gsub('["]', '', length)) # Remove inch symbol
+
+length_df <- as.data.frame(raw_data$length)
+
+length_df <- raw_data %>% separate(length, into = c('feet', 'inches'), "'", convert = TRUE) 
