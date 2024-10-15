@@ -23,5 +23,10 @@ raw_data <-raw_data %>%
   mutate(across(c(species, spp_id, location, location_certainty, habitat), 
                 as.factor))
 
+# Specify units
+raw_data <- raw_data %>% 
+  rename(length_ft_inches = length) %>% 
+  rename(weight_lb = weight)
+
 # Save as .rds
 saveRDS(raw_data, "./data/raw/raw_historical_data.rds")
