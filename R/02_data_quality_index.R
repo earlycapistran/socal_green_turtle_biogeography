@@ -1,7 +1,7 @@
 # DATA QUALITY INDEX
 
 # Load data and libraries
-historical <- readRDS("./data/processed/full_data_historical_round2.rds")
+historical <- readRDS("./data/raw/raw_historical_data.rds")
 library("fastDummies")
 library("dplyr")
 
@@ -18,10 +18,14 @@ historical <- historical %>%
 
 historical <- historical %>% 
   mutate(spp_id_dummy = ifelse(spp_id == "reported", 1, 0)) %>% 
-  mutate(weight_dummy = ifelse(is.na(weight_kg), 0, 1)) %>% 
-  mutate(length_dummy = ifelse(is.na(length_cm), 0, 1)) %>% 
+  mutate(weight_dummy = ifelse(is.na(weight_lb), 0, 1)) %>% 
+  mutate(length_dummy = ifelse(is.na(length_ft_inches), 0, 1)) %>% 
   mutate(habitat_dummy = ifelse(habitat == "not_reported", 0, 1)) %>% 
-  mutate(narrative_detail = as.numeric(narrative_detail))
+  mutate(narrative_detail = as.numeric(narrative_detail)) %>% 
+  mutate(num_turtles_dummy = case_when(
+    num_turtles == "not_reported" ~ 0,
+    num_turtles == "cargo" ~ 1,
+    num_turtles != "not_reported" | num_turtles != "cargo" ~ 2))
 
 # Calculate data quality index as sum of location certainty, 
 # spp_id, narrative detail and presence of weight, length, 
