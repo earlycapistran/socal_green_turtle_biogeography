@@ -20,7 +20,12 @@ raw_data$p_number <- as.numeric(raw_data$p_number)
 
 # Convert to factors
 raw_data <-raw_data %>% 
-  mutate(across(c(species, spp_id, location, location_certainty, habitat), 
+  mutate(across(c(species, 
+                  spp_id, 
+                  location, 
+                  location_certainty, 
+                  habitat, 
+                  narrative_detail), 
                 as.factor))
 
 # Specify units
