@@ -26,7 +26,6 @@ raw_data <- raw_data %>%
     num_turtles_numeric == "not_reported", NA, num_turtles_numeric)) %>% 
   mutate(num_turtles_numeric = as.numeric(num_turtles_numeric))
 
-
 # Add NAs to weight and length, and convert weight to numeric
 raw_data <- raw_data %>% 
   mutate(weight_lb = ifelse(weight_lb == "not_reported", NA, weight_lb)) %>% 
