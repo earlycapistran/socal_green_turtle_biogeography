@@ -9,25 +9,33 @@ head(location)
 head(historical)
 
 # Extract locations as vectors
- locations_base <- location$location
- locations_historical <- historical$location
+locations_base <- location$location
+locations_historical <- historical$location
 
  # Compare
 identical(locations_base, locations_historical)
 intersect(locations_base, locations_historical)
 setdiff(locations_base, locations_historical)
 
-# [1] "la_paz"              "salina_cruz"         "gulf_of_calfornia"
-# [4] "astoria"             "san_juan_capistrano" "east_san_pedro"
+# Make a vector of locations that aren't in the historical dataset
+diff_loc <- unlist(setdiff(locations_base, locations_historical))
 
 # Remove lines outside study area
 locations_processed <- location %>% 
-  filter(!location %in%  c("la_paz", "salina_cruz", "gulf_of_calfornia", "astoria"))
+  filter(!location %in% diff_loc) %>% 
+  filter(!location %in% c("bahia_de_los_angeles",
+                          "french_frigate_shoals")) # Outside study area
+
+historical <- historical %>% 
+  filter(!location %in% c("bahia_de_los_angeles",
+                          "french_frigate_shoals"))
 
 # Compare again with reverse order and save output
 setdiff(locations_historical, locations_processed$location)
+# List rows with more than one location
 mult_loc <- unlist(setdiff(locations_historical, locations_processed$location))
-mult_loc <- mult_loc[ !mult_loc == 'not_reported'] # We want to keep these in the original df
+# We want to keep  "not_reported" in the original df
+mult_loc <- mult_loc[ !mult_loc == 'not_reported'] 
 
 # Make a new dataframe to parse out rows with multiple locations
 historical_2 <- historical %>% 
@@ -47,14 +55,13 @@ historical_3 <- rbind(historical_2, historical) %>%
 # Let's compare the new dataframe ---------------------------
 setdiff(historical_3$location, locations_base) # Everything is in the new df
 
+# Add latitude and longitude
+historical_3 <- full_join(historical_3, locations_processed) %>% 
+  filter(!location %in% c("la_paz", "french_frigate_shoals"))
+
 # Convert locations to factor
 historical_3 <- historical_3 %>% 
   mutate(location= as.factor(location))
-
-# Add latitude and longitude
-historical_3 <- full_join(historical_3, locations_processed) %>% 
-  filter(!location == "la_paz")
-  
 
 # Save dataframe with clean locations
 saveRDS(historical_3, "./data/processed/full_data_historical_round2.rds")

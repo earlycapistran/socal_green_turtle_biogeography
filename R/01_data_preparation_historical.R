@@ -36,12 +36,6 @@ raw_data <- raw_data %>%
 raw_data$spp_id <- str_replace(raw_data$spp_id, "infered", "inferred")
 raw_data$spp_id <- as.factor(raw_data$spp_id)
 
-# Reorder levels
-raw_data$location_certainty <- factor(raw_data$spp_id, 
-                                      levels = c("not_reported", 
-                                                 "inferred", 
-                                                 "known"))
-
 # Save as .rds
 saveRDS(raw_data, "./data/raw/raw_historical_data.rds")
 
