@@ -38,12 +38,26 @@ historical <- historical %>%
              weight_dummy,
              length_dummy,
              habitat_dummy,
-             narrative_detail))))
+             narrative_detail,
+             num_turtles_dummy))))
 
 # Save another data quality index as ordinal
 historical <- historical %>%
   mutate(data_quality_cat = case_when(
     between(data_quality_index, 1,3) ~ "low",
     between(data_quality_index, 4,6) ~ "medium",
-    between(data_quality_index, 7, 9) ~ "high"))
+    between(data_quality_index, 7, 10) ~ "high"))
 
+# Convert narrative detail back to factor and export
+# dataset only with relevant indices
+
+historical_save <- historical %>% 
+  mutate(narrative_detail = as.factor(narrative_detail)) %>% 
+  select(-c(location_certainty_dummy,
+            spp_id_dummy,
+            weight_dummy,
+            length_dummy,
+            habitat_dummy,
+            num_turtles_dummy))
+
+saveRDS(historical_save, "./data/raw/raw_data_historical_dqi.rds")
