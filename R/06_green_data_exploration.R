@@ -3,6 +3,8 @@
 # Load data and libraries
 data <- readRDS("./data/processed/full_data_green.rds")
 library("ggplot2")
+library("sf")
+library("mapview")
 
 # Select columns of interest and filter out rows w/o num_turtles
 green <- data %>% 
@@ -14,11 +16,14 @@ green <- data %>%
          data_quality_index,
          data_quality_cat,
          year,
+         decade,
          state,
          county_muni) %>% 
   filter(!is.na(num_turtles_numeric)) %>% 
+  filter(num_turtles_numeric != 0) %>% 
   filter(location != "not_reported") %>% 
   filter(location != "na") %>% 
+  filter(county_muni != "na") %>% 
   filter(year < 1940) # Limit to commercial fishing years
 
 # Datasets by location
@@ -37,13 +42,28 @@ time <- ggplot(green, aes(x=year,
   geom_point()
 time
 
+time2 <- ggplot(green, aes(x=year, 
+                          y=num_turtles_numeric,
+                          color = state)) +
+  geom_line()
+time2
+
+time <- ggplot(green_cali, aes(x=year, 
+                          y=num_turtles_numeric, 
+                          size=num_turtles_numeric, 
+                          color = state)) +
+  geom_point()
+time
+
+
 # Spatial
 space <- ggplot(green, aes(x=latitude, 
                           y=longitude, 
                           size=num_turtles_numeric, 
                           color = state)) +
-  geom_point()
+  geom_point(alpha = .5)
 space
+
 
 # Histograms & boxplots
 hist_cali <- ggplot(data = green_cali, 
@@ -52,8 +72,11 @@ hist_cali <- ggplot(data = green_cali,
 hist_cali
 
 box_cali <- ggplot(data = green_cali, 
-                    aes(x = num_turtles_numeric)) +
+                    aes(y = num_turtles_numeric,
+                        group = decade)) +
   geom_boxplot()
+box_cali
+
 
 hist_cali <- ggplot(data = green_cali, 
                     aes(x = num_turtles_numeric)) +
@@ -66,6 +89,35 @@ hist_baja <- ggplot(data = green_baja,
 hist_baja
 
 box_baja <- ggplot(data = green_baja, 
-                    aes(x = num_turtles_numeric)) +
+                    aes(y = num_turtles_numeric,
+                        group = decade)) +
   geom_boxplot()
 box_baja
+
+# What happens if we get mean annual values per state?
+green_means <- green %>% 
+  group_by(decade, state) %>% 
+  summarise(mean_annual = mean(num_turtles_numeric))
+
+means <- ggplot(green, aes(x=decade, 
+                          y=num_turtles_numeric, 
+                          group = state,
+                          color = state)) +
+  geom_bar(stat="identity", position=position_dodge())
+means
+
+# More boxplots
+all_box <- ggplot(green, aes(y = num_turtles_numeric,
+                             group = state,
+                             fill = state)) +
+  geom_boxplot()
+all_box
+
+kruskal.test(num_turtles_numeric ~ state, data = green)
+
+# Map
+mapview(green, 
+        xcol = "longitude", 
+        ycol = "latitude", 
+        crs = 4269, 
+        grid = FALSE)

@@ -6,6 +6,14 @@ library(dplyr)
 library(measurements)
 library(tidyr)
 
+# Function to classify year by decade
+classify_by_decade <- function(year) {
+  # Ensure the input is numeric
+  year <- as.numeric(year)
+  # Create the decade classification
+  decade <- floor(year / 10) * 10
+  return(decade)
+}
 # Clean up data with mixed characters and numbers -----------------
 # Starting with number of turtles: generate placeholder for "cargo" using
 # mean value of reported shipments
@@ -53,6 +61,12 @@ raw_data <- raw_data %>%
   mutate(length_ft_inches = ifelse(length_ft_inches == "0'0", 
                                    NA, 
                                    length_ft_inches)) # Remove placeholder 0s
+
+# Add variable by decade
+raw_data <- raw_data %>% 
+  mutate(decade = classify_by_decade(year))
+
+
 
 # Save ------------------------------------------------
 write.csv(raw_data, "./data/processed/full_data_historical_round1")
