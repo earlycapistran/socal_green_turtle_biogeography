@@ -2,7 +2,7 @@
 
 # Load data and libraries
 library(dplyr)
-full_data <- readRDS("./data/processed/full_processed_data_historical.rds")
+full_data <- readRDS("./data/processed/full_data_historical_round2.rds")
 
 # Select primary columns of interest
 green_data <- full_data %>% 
