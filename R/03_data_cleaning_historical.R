@@ -1,7 +1,7 @@
 # DATA CLEANING
 
 # Load data and packages -----------------------------------
-raw_data <- readRDS("./data/raw/raw_historical_data.rds")
+raw_data <- readRDS("./data/raw/raw_data_historical_dqi.rds")
 library(dplyr)
 library(measurements)
 library(tidyr)

@@ -66,3 +66,4 @@ historical_3 <- historical_3 %>%
 # Save dataframe with clean locations
 saveRDS(historical_3, "./data/processed/full_data_historical_round2.rds")
 write.csv(historical_3, "./data/processed/full_data_historical_round2.csv")
+
