@@ -52,7 +52,9 @@ historical_3 <- historical_3 %>%
   mutate(location= as.factor(location))
 
 # Add latitude and longitude
-historical_3 <- full_join(historical_3, location)
+historical_3 <- full_join(historical_3, locations_processed) %>% 
+  filter(!location == "la_paz")
+  
 
 # Save dataframe with clean locations
 saveRDS(historical_3, "./data/processed/full_data_historical_round2.rds")
