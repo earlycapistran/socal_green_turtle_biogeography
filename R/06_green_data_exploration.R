@@ -5,6 +5,7 @@ data <- readRDS("./data/processed/full_data_green.rds")
 library("ggplot2")
 library("sf")
 library("mapview")
+library("dplyr")
 
 # Select columns of interest and filter out rows w/o num_turtles
 green <- data %>% 
@@ -120,4 +121,5 @@ mapview(green,
         xcol = "longitude", 
         ycol = "latitude", 
         crs = 4269, 
-        grid = FALSE)
+        grid = FALSE,
+        cex = "num_turtles_numeric")
