@@ -3,6 +3,7 @@ location <- read.csv("./data/raw/location_raw.csv")
 historical <- readRDS("./data/processed/full_data_historical_round1.rds")
 library("dplyr")
 library("stringr")
+library("tidyr")
 
 # Compare site names across datasets ----------------------------
 head(location)
@@ -57,7 +58,9 @@ setdiff(historical_3$location, locations_base) # Everything is in the new df
 
 # Add latitude and longitude
 historical_3 <- full_join(historical_3, locations_processed) %>% 
-  filter(!location %in% c("la_paz", "french_frigate_shoals"))
+  filter(!location %in% c("la_paz", 
+                          "french_frigate_shoals",
+                          "almejas_bay"))
 
 # Convert locations to factor
 historical_3 <- historical_3 %>% 
