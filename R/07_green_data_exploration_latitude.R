@@ -7,6 +7,8 @@ library("sf")
 library("mapview")
 library("dplyr")
 library("psych")
+library("ggmap")
+library("osmdata")
 
 # Select columns of interest and filter out rows w/o num_turtles
 green <- data %>% 
@@ -60,3 +62,23 @@ shapiro.test(south$num_turtles_numeric)
 # Kruskall test
 kruskal.test(num_turtles_numeric ~ lat_group, 
              data = green_lat)
+
+# Map
+mapview(green, 
+        xcol = "longitude", 
+        ycol = "latitude", 
+        crs = 4269, 
+        grid = FALSE,
+        cex = "num_turtles_numeric")
+
+# ggmap
+
+cclme <- c(-125, 20, -115, 35)
+
+cclme_map <- get_stadiamap(c(left = -115, 
+                             bottom = 2208, 
+                             right = -125, 
+                             top = 35), 
+                           maptype = "stamen_terrain_background", 
+                           crop=FALSE)
+ggmap(cclme_map)
