@@ -70,7 +70,8 @@ green_means <- green_quant %>%
 green_means <- green_quant %>% 
   group_by(location, year, lat_group) %>% 
   summarise(across(where(is.numeric), 
-                   ~ mean(.x, na.rm = TRUE)))
+                   ~ mean(.x, na.rm = TRUE))) %>% 
+  mutate(year = as.numeric(year))
 
 # Save
 saveRDS(green_means, "./data/processed/green_means.rds")
