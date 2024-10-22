@@ -18,5 +18,4 @@ green_data <-green_data %>%
   filter(species == "green")
 
 # Save
-
 saveRDS(green_data, "./data/processed/full_data_green.rds")
