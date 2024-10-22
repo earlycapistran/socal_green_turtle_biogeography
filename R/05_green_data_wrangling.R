@@ -34,6 +34,7 @@ green_quant <- green_data %>%
   select(num_turtles_numeric, 
          latitude, 
          longitude,
+         lat_group,
          location,
          location_certainty,
          data_quality_index,

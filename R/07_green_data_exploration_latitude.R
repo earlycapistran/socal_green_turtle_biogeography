@@ -1,7 +1,7 @@
 # Exploratory data visualization
 
 # Load data and libraries
-data <- readRDS("./data/processed/full_data_green.rds")
+data <- readRDS("./data/processed/green_quant.rds")
 library("ggplot2")
 library("sf")
 library("mapview")
@@ -16,20 +16,17 @@ green <- data %>%
          latitude, 
          longitude,
          location,
-         location_certainty,
-         data_quality_index,
-         data_quality_cat,
          year,
          decade,
          state,
          county_muni,
-         country) %>% 
-  filter(!is.na(num_turtles_numeric)) %>% 
-  filter(num_turtles_numeric != 0) %>% 
-  filter(location != "not_reported") %>% 
-  filter(location != "na") %>% 
-  filter(county_muni != "na") %>% 
-  filter(year < 1940) # Limit to commercial fishing years
+         country) 
+
+green_means <- green %>% 
+  group_by(location, year) %>% 
+  summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE))) %>% 
+  ungroup()
+
 
 # Datasets by location split by southern limit of CCLME 
 # (Punta Eugenia, BCS)
