@@ -28,7 +28,6 @@ green_means <- green %>%
   summarise(across(where(is.numeric), 
                    ~ mean(.x, na.rm = TRUE)))
 
-
 north <- green_means %>% 
   filter(lat_group == "north")
 
@@ -36,42 +35,34 @@ south <- green_means %>%
   filter(lat_group == "south")
 
 # Get descriptive stats to look at differences by latitude
-describeBy(green_lat$num_turtles_numeric, 
-           green_lat$lat_group,
+describeBy(green_means$num_turtles_numeric, 
+           green_means$lat_group,
            IQR=FALSE, skew = FALSE)
 
 # Boxplot
-box <- ggplot(data = green_lat, 
+box <- ggplot(data = green_means, 
               aes(x = lat_group,
               y = num_turtles_numeric,
               fill = lat_group)) +
   geom_boxplot()
 box  
 
-# Test normality
-shapiro.test(north$num_turtles_numeric)
-shapiro.test(south$num_turtles_numeric)
-
-# Kruskall test
-kruskal.test(num_turtles_numeric ~ lat_group, 
-             data = green_lat)
-
 # Map
-mapview(green, 
+mapview(green_means, 
         xcol = "longitude", 
         ycol = "latitude", 
         crs = 4269, 
         grid = FALSE,
         cex = "num_turtles_numeric")
 
-# ggmap
-
-cclme <- c(-125, 20, -115, 35)
-
-cclme_map <- get_stadiamap(c(left = -115, 
-                             bottom = 2208, 
-                             right = -125, 
-                             top = 35), 
+cclme_map <- get_stadiamap(c(left = -120, 
+                             bottom = 20, 
+                             right = -110, 
+                             top = 40), 
                            maptype = "stamen_terrain_background", 
                            crop=FALSE)
-ggmap(cclme_map)
+ggmap(cclme_map) + 
+  geom_point(data=green_means,
+             aes(x=longitude,y=latitude,color=lat_group),
+             size=4,alpha=.7)
+

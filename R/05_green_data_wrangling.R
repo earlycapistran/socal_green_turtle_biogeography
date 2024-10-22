@@ -54,3 +54,23 @@ green_quant <- green_data %>%
 # Save
 saveRDS(green_quant, "./data/processed/green_quant.rds")
 
+# Select columns of interest and filter out rows w/o num_turtles
+green_means <- green_quant %>% 
+  select(num_turtles_numeric, 
+         latitude, 
+         longitude,
+         lat_group,
+         location,
+         year,
+         decade,
+         state,
+         county_muni,
+         country) 
+
+green_means <- green_quant %>% 
+  group_by(location, year, lat_group) %>% 
+  summarise(across(where(is.numeric), 
+                   ~ mean(.x, na.rm = TRUE)))
+
+# Save
+saveRDS(green_means, "./data/processed/green_means.rds")

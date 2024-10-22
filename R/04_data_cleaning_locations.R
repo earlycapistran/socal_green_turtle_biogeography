@@ -33,6 +33,7 @@ historical <- historical %>%
 
 # Compare again with reverse order and save output
 setdiff(locations_historical, locations_processed$location)
+
 # List rows with more than one location
 mult_loc <- unlist(setdiff(locations_historical, locations_processed$location))
 # We want to keep  "not_reported" in the original df
@@ -47,7 +48,8 @@ historical_2 <- historical %>%
   pivot_longer(cols=c('loc_1', 'loc_2'),
                values_to='location') %>% 
   select(-c("name")) %>% 
-  mutate(location = str_trim(location)) # Remove whitespace
+  mutate(location = str_trim(location))  %>% # Remove whitespace
+  mutate(num_turtles_numeric = num_turtles_numeric/2) # Divide turtles by # locations
 
 # Put everything together and remove rows with multiple sites
 historical_3 <- rbind(historical_2, historical) %>% 

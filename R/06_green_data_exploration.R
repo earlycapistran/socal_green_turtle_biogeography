@@ -43,11 +43,6 @@ time <- ggplot(green, aes(x=year,
   geom_point()
 time
 
-time2 <- ggplot(green, aes(x=year, 
-                          y=num_turtles_numeric,
-                          color = state)) +
-  geom_line()
-time2
 
 time <- ggplot(green_cali, aes(x=year, 
                           y=num_turtles_numeric, 
