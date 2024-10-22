@@ -5,7 +5,7 @@
 raw_data <- read.csv("./data/raw/raw_data_historical.csv")
 library("lubridate")
 library("dplyr")
-
+library("stringr")
 # View data
 str(raw_data)
 head(raw_data)

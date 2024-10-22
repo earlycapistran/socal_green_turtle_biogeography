@@ -15,6 +15,7 @@ green <- data %>%
   select(num_turtles_numeric, 
          latitude, 
          longitude,
+         lat_group,
          location,
          year,
          decade,
@@ -23,20 +24,15 @@ green <- data %>%
          country) 
 
 green_means <- green %>% 
-  group_by(location, year) %>% 
-  summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE))) %>% 
-  ungroup()
+  group_by(location, year, lat_group) %>% 
+  summarise(across(where(is.numeric), 
+                   ~ mean(.x, na.rm = TRUE)))
 
 
-# Datasets by location split by southern limit of CCLME 
-# (Punta Eugenia, BCS)
-green_lat <- green %>% 
-  mutate(lat_group = as.factor(ifelse(latitude <28, "south", "north")))
-
-north <- green_lat %>% 
+north <- green_means %>% 
   filter(lat_group == "north")
 
-south <- green_lat %>% 
+south <- green_means %>% 
   filter(lat_group == "south")
 
 # Get descriptive stats to look at differences by latitude

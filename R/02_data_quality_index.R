@@ -4,6 +4,7 @@
 historical <- readRDS("./data/raw/raw_historical_data.rds")
 library("fastDummies")
 library("dplyr")
+library("tidyr")
 
 # Check factor levels for data quality indicators
 levels(historical$location_certainty)
