@@ -25,7 +25,7 @@ green <- data %>%
   filter(location != "not_reported") %>% 
   filter(location != "na") %>% 
   filter(county_muni != "na") %>% 
-  filter(year < 1940) # Limit to commercial fishing years
+  filter(year < 1935) # Limit to commercial fishing years
 
 # Datasets by location
 
