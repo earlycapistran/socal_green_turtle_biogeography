@@ -75,3 +75,14 @@ green_means <- green_quant %>%
 
 # Save
 saveRDS(green_means, "./data/processed/green_means.rds")
+
+green_means_full_chronology <- green_means %>% 
+  group_by(location, lat_group) %>% 
+  summarise(across(where(is.numeric), 
+                   ~ mean(.x, na.rm = TRUE))) %>% 
+  mutate(year = as.numeric(year))
+
+# Save
+saveRDS(green_means_full_chronology, "./data/processed/green_means_full_chronology.rds")
+write.csv(green_means_full_chronology, "./data/processed/green_means_full_chronology.csv")
+
