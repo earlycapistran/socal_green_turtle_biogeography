@@ -88,3 +88,10 @@ validation_results <- df_long[sample_indices, ] %>%
 
 # Print the validation results
 print(validation_results)
+
+# Convert Fahrenheit to Celsius and add a new column 'Value_Celsius'
+df_long <- df_long %>%
+  mutate(Value_Celsius = Value * 5 / 9)
+
+# Save the reshaped data with the new column to a new CSV file suitable for QGIS
+write_csv(df_long, './data/processed/sst_data_qgis.csv')
