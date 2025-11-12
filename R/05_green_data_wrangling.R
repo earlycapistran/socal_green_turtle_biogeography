@@ -18,10 +18,10 @@ green_data <-green_data %>%
   filter(species == "green")
 
 
-# Datasets by location split by southern limit of CCLME 
-# (Punta Eugenia, BCS)
+# Datasets by location split by southern limit of SoCal Bight
+# (Punta Colonet, BC)
 green_data <- green_data %>% 
-  mutate(lat_group = as.factor(ifelse(latitude <28, "south", "north")))
+  mutate(lat_group = as.factor(ifelse(latitude <31, "south", "north")))
 
 # Save
 saveRDS(green_data, 
