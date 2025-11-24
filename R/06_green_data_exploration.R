@@ -4,8 +4,9 @@
 data <- readRDS("./data/processed/full_data_green.rds")
 library("ggplot2")
 library("sf")
-library("mapview")
 library("dplyr")
+library("ggbeeswarm")
+library("ridgeline")
 
 # Select columns of interest and filter out rows w/o num_turtles
 green <- data %>% 
@@ -19,7 +20,8 @@ green <- data %>%
          year,
          decade,
          state,
-         county_muni) %>% 
+         county_muni,
+         lat_group) %>% 
   filter(!is.na(num_turtles_numeric)) %>% 
   filter(num_turtles_numeric != 0) %>% 
   filter(location != "not_reported") %>% 
@@ -27,95 +29,84 @@ green <- data %>%
   filter(county_muni != "na") %>% 
   filter(year < 1935) # Limit to commercial fishing years
 
-# Datasets by location
+# Datasets by latitude group (inside and outside SoCal Bight)
 
-green_cali <- green %>% 
-  filter(state == "california")
+green_scb <- green %>% 
+  filter(lat_group == "socal_bight")
 
-green_baja <- green %>% 
-  filter(state == "baja_california_sur" | state == "baja_california")
+green_non_scb <- green %>% 
+  filter(lat_group == "non_socal_bight")
 
-# Time series
+# Time series by latitude group
 time <- ggplot(green, aes(x=year, 
                          y=num_turtles_numeric, 
                          size=num_turtles_numeric, 
-                         color = state)) +
+                         color = lat_group)) +
   geom_point()
 time
-
-
-time <- ggplot(green_cali, aes(x=year, 
-                          y=num_turtles_numeric, 
-                          size=num_turtles_numeric, 
-                          color = state)) +
-  geom_point()
-time
-
 
 # Spatial
 space <- ggplot(green, aes(x=latitude, 
                           y=longitude, 
                           size=num_turtles_numeric, 
-                          color = state)) +
+                          color = lat_group)) +
   geom_point(alpha = .5)
 space
 
+# Boxplot north and south
+box <- ggplot(green, aes(y = num_turtles_numeric,
+                         color = lat_group)) +
+  geom_boxplot() +
+  theme_classic() 
+box
 
-# Histograms & boxplots
-hist_cali <- ggplot(data = green_cali, 
-                    aes(x = num_turtles_numeric)) +
-  geom_histogram()
-hist_cali
+# Beeswarm plot
+ggplot(green, aes(x = lat_group, 
+                  y = num_turtles_numeric,
+                  color = lat_group)) +
+  geom_beeswarm(cex = 1,
+                priority = "density", 
+                alpha = 0.7,
+                size = 2) +
+  stat_summary(fun.y = median, 
+               fun.ymin = median, 
+               fun.ymax = median, 
+               geom = "crossbar", 
+               color = "darkgrey",
+               width = 0.5) +
+  theme_classic()
 
-box_cali <- ggplot(data = green_cali, 
-                    aes(y = num_turtles_numeric,
-                        group = decade)) +
-  geom_boxplot()
-box_cali
+# Jitter strip plot
+ggplot(green, aes(x = lat_group, 
+                  y = num_turtles_numeric,
+                  color = lat_group)
+       ) +
+  geom_jitter(width = 0.1,
+              alpha = 0.5,
+             size = 3) + 
+  stat_summary(fun.y = median, 
+               fun.ymin = median, 
+               fun.ymax = median, 
+               geom = "crossbar", 
+               width = 0.5) +
+  theme_classic()         # Use a clean theme
 
+# Ridgeline plot
+ridgeline(green$num_turtles_numeric, green$lat_group,
+  palette = hcl.colors(6, palette = "viridis",
+                       alpha = 0.85),
+  mode = TRUE,
+  border = hcl.colors(6, palette = "viridis",
+                      alpha = 0.85))
 
-hist_cali <- ggplot(data = green_cali, 
-                    aes(x = num_turtles_numeric)) +
-  geom_histogram()
-hist_cali
-
-hist_baja <- ggplot(data = green_baja, 
-                   aes(x = num_turtles_numeric)) +
-  geom_histogram()
-hist_baja
-
-box_baja <- ggplot(data = green_baja, 
-                    aes(y = num_turtles_numeric,
-                        group = decade)) +
-  geom_boxplot()
-box_baja
-
-# What happens if we get mean annual values per state?
-green_means <- green %>% 
-  group_by(decade, state) %>% 
-  summarise(mean_annual = mean(num_turtles_numeric))
-
-means <- ggplot(green, aes(x=decade, 
-                          y=num_turtles_numeric, 
-                          group = state,
-                          color = state)) +
-  geom_bar(stat="identity", position=position_dodge())
-means
-
-# More boxplots
-all_box <- ggplot(green, aes(y = num_turtles_numeric,
-                             group = state,
-                             fill = state)) +
-  geom_boxplot()
-all_box
-
-kruskal.test(num_turtles_numeric ~ state, data = green)
-
-# Map
-mapview(green, 
-        xcol = "longitude", 
-        ycol = "latitude", 
-        crs = 4269, 
-        grid = FALSE,
-        cex = "num_turtles_numeric")
-
+# Histogram
+ggplot(green, aes(x = num_turtles_numeric,
+                  fill = factor(lat_group)
+                  )
+       ) +
+  geom_dotplot(binwidth = 15,
+               method = "histodot") +
+  scale_y_continuous(NULL, breaks = NULL) +
+  facet_wrap(~lat_group)
+  
+  

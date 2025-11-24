@@ -98,5 +98,7 @@ graphing_temps %>%
     y = NULL,
     title = "Temperature Change at La Jolla Pier",
     subtitle = "Relative to average of 1916-2025 [°C]"
-  )
+  ) +
+  theme(axis.text=element_text(size=16),
+         axis.title=element_text(size=18))
   
