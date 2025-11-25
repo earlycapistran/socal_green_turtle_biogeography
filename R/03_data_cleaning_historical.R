@@ -1,7 +1,7 @@
 # DATA CLEANING
 
 # Load data and packages -----------------------------------
-raw_data <- readRDS("./data/raw/raw_data_historical_dqi.rds")
+hist_data <- readRDS("./data/processed/historical_dqi.rds")
 library(dplyr)
 library(measurements)
 library(tidyr)
@@ -20,7 +20,7 @@ classify_by_decade <- function(year) {
 # mean value of reported shipments
 
 # Make vector with only numeric values
-num_turtles_numeric <- as.numeric(raw_data$num_turtles) %>% 
+num_turtles_numeric <- as.numeric(hist_data$num_turtles) %>% 
   na.omit()
 
 # Cut off based on smallest shipment
@@ -28,7 +28,7 @@ cargo_values <- (num_turtles_numeric[num_turtles_numeric >= 17])
 mean_cargo <- mean(cargo_values)
 
 # Replace "cargo" with mean values and "not reported" with "NA"
-processed_data <- raw_data %>% 
+processed_data <- hist_data %>% 
   mutate(num_turtles_numeric = ifelse(
     num_turtles == "cargo", mean_cargo, num_turtles)) %>% 
   mutate(num_turtles_numeric = ifelse(
@@ -58,17 +58,17 @@ length_df <- processed_data %>% # Wrangle length to cm in a separate dataframe
   mutate(length_cm = ifelse(length_cm == 0, NA, length_cm)) # remove placeholder 0s
 
 # Add to the main dataframe
-raw_data <- raw_data %>% 
+hist_data <- hist_data %>% 
   mutate(length_cm = length_df$length_cm) %>%
   mutate(length_ft_inches = ifelse(length_ft_inches == "0'0", 
                                    NA, 
                                    length_ft_inches)) # Remove placeholder 0s
 
 # Add variable by decade
-raw_data <- raw_data %>% 
+hist_data <- hist_data %>% 
   mutate(decade = classify_by_decade(year))
 
 # Save ------------------------------------------------
-write.csv(raw_data, "./data/processed/full_data_historical_round1")
-saveRDS(raw_data, "./data/processed/full_data_historical_round1.rds")
+write.csv(hist_data, "./data/processed/full_data_historical_round1")
+saveRDS(hist_data, "./data/processed/full_data_historical_round1.rds")
 

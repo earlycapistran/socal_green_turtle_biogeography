@@ -1,7 +1,7 @@
 # Exploratory data visualization
 
 # Load data and libraries
-data <- readRDS("./data/processed/full_data_green.rds")
+data <- readRDS("./data/processed/green_means_full_chronology.rds.rds")
 library("ggplot2")
 library("sf")
 library("dplyr")

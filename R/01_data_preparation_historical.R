@@ -27,15 +27,14 @@ clean_data <- clean_data %>%
   slice(-problem_index)
 
 # Fix data classes ---------------
-
 # Convert to dates
-raw_data$fulldate <- ymd(raw_data$fulldate)
+clean_data$fulldate <- ymd(clean_data$fulldate)
 
 # Convert to numeric 
-raw_data$p_number <- as.numeric(raw_data$p_number)
+clean_data$p_number <- as.numeric(clean_data$p_number)
 
 # Convert to factors
-raw_data <-raw_data %>% 
+clean_data <-clean_data %>% 
   mutate(across(c(species, 
                   spp_id, 
                   location, 
@@ -45,24 +44,17 @@ raw_data <-raw_data %>%
                 as.factor))
 
 # Specify units
-raw_data <- raw_data %>% 
+clean_data <- clean_data %>% 
   rename(length_ft_inches = length) %>% 
   rename(weight_lb = weight)
 
 # Make a column for year
-raw_data <- raw_data %>% 
+clean_data <- clean_data %>% 
   mutate(year = format(as.Date(fulldate, format="%Y/%m/%d"),"%Y"))
 
 # Change species to factor
-raw_data$spp_id <- as.factor(raw_data$spp_id)
-
-
-
-# Remove empty rows
-raw_data %>% 
-  mutate(across(where(is.character), ~ na_if(trimws(.), ""))) %>%
-  remove_empty("rows")
+clean_data$spp_id <- as.factor(clean_data$spp_id)
 
 # Save as .rds
-saveRDS(raw_data, "./data/raw/raw_historical_data.rds")
+saveRDS(clean_data, "./data/raw/clean_historical_data.rds")
 

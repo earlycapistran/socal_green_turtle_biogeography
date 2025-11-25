@@ -1,7 +1,7 @@
 # DATA QUALITY INDEX
 
 # Load data and libraries
-historical <- readRDS("./data/raw/raw_historical_data.rds")
+historical <- readRDS("./data/raw/clean_historical_data.rds")
 library("fastDummies")
 library("dplyr")
 library("tidyr")
@@ -61,4 +61,5 @@ historical_save <- historical %>%
             habitat_dummy,
             num_turtles_dummy))
 
-saveRDS(historical_save, "./data/raw/raw_data_historical_dqi.rds")
+# This is a full set of historical data cleaned and prepped for use in R
+saveRDS(historical_save, "./data/processed/historical_dqi.rds")
