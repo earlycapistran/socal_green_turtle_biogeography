@@ -37,8 +37,7 @@ raw_data <- raw_data %>%
 raw_data <- raw_data %>% 
   mutate(year = format(as.Date(fulldate, format="%Y/%m/%d"),"%Y"))
 
-# Fix typo
-raw_data$spp_id <- str_replace(raw_data$spp_id, "infered", "inferred")
+# Change species to factor
 raw_data$spp_id <- as.factor(raw_data$spp_id)
 
 # Save as .rds

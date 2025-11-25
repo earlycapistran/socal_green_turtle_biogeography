@@ -17,7 +17,6 @@ green_data <- full_data %>%
 green_data <-green_data %>% 
   filter(species == "green")
 
-
 # Datasets by location split by southern limit of SoCal Bight
 # (Punta Colonet, BC)
 green_data <- green_data %>% 

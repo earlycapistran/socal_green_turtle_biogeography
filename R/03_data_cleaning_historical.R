@@ -28,31 +28,32 @@ cargo_values <- (num_turtles_numeric[num_turtles_numeric >= 17])
 mean_cargo <- mean(cargo_values)
 
 # Replace "cargo" with mean values and "not reported" with "NA"
-raw_data <- raw_data %>% 
+processed_data <- raw_data %>% 
   mutate(num_turtles_numeric = ifelse(
-    num_turtles == "cargo", mean_cargo, num_turtles))%>% 
+    num_turtles == "cargo", mean_cargo, num_turtles)) %>% 
   mutate(num_turtles_numeric = ifelse(
     num_turtles_numeric == "not_reported", NA, num_turtles_numeric)) %>% 
   mutate(num_turtles_numeric = as.numeric(num_turtles_numeric))
 
 # Add NAs to weight and length, and convert weight to numeric
-raw_data <- raw_data %>% 
+processed_data <- processed_data %>% 
   mutate(weight_lb = ifelse(weight_lb == "not_reported", NA, weight_lb)) %>% 
   mutate(weight_lb = as.numeric(weight_lb)) %>% 
   mutate(weight_kg = round(weight_lb * 0.45359237, 2)) # Convert to kg
 
 # For length, convert feet to cm
-raw_data <- raw_data %>% 
+processed_data <- processed_data %>% 
   # 0s as placeholders for missing values
   mutate(length_ft_inches = ifelse(length_ft_inches == "not_reported", 
                                    "0'0", 
                                    length_ft_inches)) %>% 
   mutate(length_ft_inches = gsub('["]', '', length_ft_inches)) # Remove inch symbol
 
-length_df <- raw_data %>% # Wrangle length to cm in a separate dataframe
+length_df <- processed_data %>% # Wrangle length to cm in a separate dataframe
   select(length_ft_inches) %>% 
   # Make separate columns for feet and inches, then convert to cm
   separate(length_ft_inches, into = c('feet', 'inches'), "'", convert = TRUE) %>% 
+  mutate(inches = ifelse(is.na(inches), 0, inches)) %>% 
   mutate(length_cm = (12*feet + inches)*2.54) %>% 
   mutate(length_cm = ifelse(length_cm == 0, NA, length_cm)) # remove placeholder 0s
 
