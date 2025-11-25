@@ -7,6 +7,7 @@ library("sf")
 library("dplyr")
 library("ggbeeswarm")
 library("ridgeline")
+library("ggExtra")
 
 # Select columns of interest and filter out rows w/o num_turtles
 green <- data %>% 
@@ -27,22 +28,27 @@ green <- data %>%
   filter(location != "not_reported") %>% 
   filter(location != "na") %>% 
   filter(county_muni != "na") %>% 
-  filter(year < 1935) # Limit to commercial fishing years
+  filter(year < 1935) %>% # Limit to commercial fishing years
+  mutate(lat_group = relevel(lat_group, ref = "south"))
+  
 
 # Datasets by latitude group (inside and outside SoCal Bight)
-
 green_scb <- green %>% 
   filter(lat_group == "socal_bight")
 
 green_non_scb <- green %>% 
   filter(lat_group == "non_socal_bight")
 
+# Custom color scale
+col_scale <- c("#783c8c", "#c85028")
+
 # Time series by latitude group
 time <- ggplot(green, aes(x=year, 
                          y=num_turtles_numeric, 
                          size=num_turtles_numeric, 
                          color = lat_group)) +
-  geom_point()
+  geom_point() +
+  scale_color_manual(values = col_scale) 
 time
 
 # Spatial
@@ -51,12 +57,15 @@ space <- ggplot(green, aes(x=latitude,
                           size=num_turtles_numeric, 
                           color = lat_group)) +
   geom_point(alpha = .5)
-space
 
 # Boxplot north and south
-box <- ggplot(green, aes(y = num_turtles_numeric,
-                         color = lat_group)) +
-  geom_boxplot() +
+box <- ggplot(green, aes(x = num_turtles_numeric,
+                         y = lat_group,
+                         fill = lat_group)) +
+  geom_boxplot(alpha = 0.6,
+               outlier.shape = 5) +
+  scale_fill_manual(values = col_scale) +
+  scale_color_manual(values = col_scale) +
   theme_classic() 
 box
 
@@ -77,12 +86,11 @@ ggplot(green, aes(x = lat_group,
   theme_classic()
 
 # Jitter strip plot
-ggplot(green, aes(x = lat_group, 
+jitter <- ggplot(green, aes(x = lat_group, 
                   y = num_turtles_numeric,
                   color = lat_group)
        ) +
-  geom_jitter(width = 0.1,
-              alpha = 0.5,
+  geom_point(alpha = 0.5,
              size = 3) + 
   stat_summary(fun.y = median, 
                fun.ymin = median, 
@@ -91,22 +99,23 @@ ggplot(green, aes(x = lat_group,
                width = 0.5) +
   theme_classic()         # Use a clean theme
 
+ggMarginal(jitter, type = "boxplot")  
+
+
 # Ridgeline plot
 ridgeline(green$num_turtles_numeric, green$lat_group,
   palette = hcl.colors(6, palette = "viridis",
-                       alpha = 0.85),
-  mode = TRUE,
+                       alpha = 0.6),
   border = hcl.colors(6, palette = "viridis",
                       alpha = 0.85))
 
 # Histogram
-ggplot(green, aes(x = num_turtles_numeric,
+hist <- ggplot(green, aes(x = num_turtles_numeric,
                   fill = factor(lat_group)
                   )
        ) +
-  geom_dotplot(binwidth = 15,
-               method = "histodot") +
+  geom_histogram(binwidth = 20) +
   scale_y_continuous(NULL, breaks = NULL) +
-  facet_wrap(~lat_group)
-  
-  
+  facet_grid(lat_group ~.) +
+  theme_classic()
+hist
