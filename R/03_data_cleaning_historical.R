@@ -14,6 +14,7 @@ classify_by_decade <- function(year) {
   decade <- floor(year / 10) * 10
   return(decade)
 }
+
 # Clean up data with mixed characters and numbers -----------------
 # Starting with number of turtles: generate placeholder for "cargo" using
 # mean value of reported shipments
@@ -65,8 +66,6 @@ raw_data <- raw_data %>%
 # Add variable by decade
 raw_data <- raw_data %>% 
   mutate(decade = classify_by_decade(year))
-
-
 
 # Save ------------------------------------------------
 write.csv(raw_data, "./data/processed/full_data_historical_round1")

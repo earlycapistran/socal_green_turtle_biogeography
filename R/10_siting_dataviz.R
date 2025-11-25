@@ -15,12 +15,11 @@ ggplot(plot_data, aes(x = lat_group,
                       y = num_turtles_numeric,
                       color = lat_group)) + 
   ## add half-violin from {ggdist} package
-  ggdist::geom_dots(## orientation to the left
+  ggdist::stat_halfeye(## orientation to the left
     side = "left", 
     ## move geom to the left
     justification = 1.12, 
-    ## adjust grouping (binning) of observations 
-    binwidth = 5,
+
     na.rm = TRUE) +
   geom_boxplot(
     width = .15, 

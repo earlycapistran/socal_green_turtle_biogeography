@@ -81,8 +81,7 @@ green_means_full_chronology <- green_means %>%
   group_by(location, lat_group) %>% 
   summarise(across(where(is.numeric), 
                    ~ mean(.x, na.rm = TRUE))) %>% 
-  mutate(year = as.numeric(year)) %>% 
-  mutate(num_turtles_numeric = num_turtles_numeric + 0.1) # To calculate log
+  mutate(year = as.numeric(year)) 
 
 # Save
 saveRDS(green_means_full_chronology, "./data/processed/green_means_full_chronology.rds")
