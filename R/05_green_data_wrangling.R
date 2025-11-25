@@ -28,7 +28,6 @@ saveRDS(green_data,
 
 # Make an analysis dataset with primary variables  
 # and timeframe of interest 
-
 green_quant <- green_data %>% 
   select(num_turtles_numeric, 
          latitude, 
