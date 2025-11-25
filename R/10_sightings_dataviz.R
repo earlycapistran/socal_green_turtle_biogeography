@@ -13,16 +13,15 @@ plot_data <- data %>%
   select(num_turtles_numeric, lat_group) %>% 
   na.omit() # Remove datapoints with unreported locations
 
+# Plot
 ggplot(plot_data, aes(x = lat_group, 
                       y = num_turtles_numeric,
                       color = lat_group)) + 
   ## add half-violin from {ggdist} package
   ggdist::geom_dots(
     ## orientation to the left
-    side = "right", 
-    binwidth = 1,
-    ## move geom to the left
-    justification = 1.12) +
+    side = "left", 
+    justification = 1.15) +
   geom_boxplot(
     width = .15, 
     outlier.shape = 4,
@@ -31,21 +30,58 @@ ggplot(plot_data, aes(x = lat_group,
   ## add justified jitter from the {gghalves} package
   gghalves::geom_half_point(
     ## draw jitter on the left
-    side = "l", 
+    side = "r", 
     ## control range of jitter
     range_scale = .4, 
     ## add some transparency
     alpha = .2
   ) +
-  coord_cartesian(ylim = c(0, 275)) +
+  coord_cartesian(clip = "off", expand = FALSE) +
   theme_classic()
-  # ggdist::stat_dots(
-  #   ## orientation to the left
-  #   side = "left", 
-  #   ## move geom to the left
-  #   justification = 1.12, 
-  #   ## adjust grouping (binning) of observations 
-  #   binwidth = .25
-  # ) + 
-  ## remove white space on the sides
+
+### Make it fancy! -----------------
+
+## calculate summary stats
+df_turtle_stats <- 
+  plot_data %>% 
+  filter(!is.na(num_turtles_numeric)) %>% 
+  group_by(lat_group) %>% 
+  mutate(
+    n = n(),
+    median = median(num_turtles_numeric),
+    max = max(num_turtles_numeric)
+  ) %>% 
+  ungroup() %>% 
+  mutate(lat_group_num = as.numeric(fct_rev(lat_group)))  %>% 
+  mutate(lat_group = fct_rev(lat_group))  
+
+p2 <- 
+  ggplot(df_turtle_stats, 
+         aes(x = num_turtles_numeric,
+             y = lat_group,
+             fill = lat_group,
+             color = lat_group)) +
+  # geom_point(
+  #   aes(x = num_turtles_numeric - .15),
+  #   size = 2,
+  #   alpha = .3
+  # ) +
+  stat_interval(aes(color_ramp = after_stat(level)),
+                linewidth = 3  # Thicker lines for visibility
+                ) +
+  ggdist::geom_dots(
+    position = position_nudge(y = 0.1)) +
+  
+  geom_jitter(
+    aes(x = num_turtles_numeric - 0.15),
+    position = position_nudge(y = -0.1),  # Align with dots
+    size = 1,
+    alpha = 0.3
+  ) +
+
+  # stat_pointinterval(color = "black") +
+  scale_color_manual(values = c("#3d6721", "#a86826"), guide = "none") +
+  scale_fill_manual(values = c("#3d6721", "#a86826"), guide = "none") +
+  theme_classic()
+p2
 
