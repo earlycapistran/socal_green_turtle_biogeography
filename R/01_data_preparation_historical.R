@@ -3,12 +3,28 @@
 
 # Load data and packages
 raw_data <- read.csv("./data/raw/raw_data_historical.csv")
-library("lubridate")
+library("lubridate") # To set up dates
 library("dplyr")
-library("stringr")
+library("stringr") # To handle strings
+library("janitor") # To tidy up data
+
 # View data
 str(raw_data)
 head(raw_data)
+
+# Convert string NAs to real NAs
+clean_data <- raw_data %>%
+  mutate(across(
+    where(is.character), # Run across all character columns
+    ~ na_if(.x, "na")  # Directly replaces "na" with NA
+  ))
+
+# Check for and identify empty rows
+problem_index <- which(rowSums(is.na(raw_data) | raw_data == "") == ncol(clean_data))
+
+# Remove it
+clean_data <- clean_data %>% 
+  slice(-problem_index)
 
 # Fix data classes ---------------
 
@@ -39,6 +55,13 @@ raw_data <- raw_data %>%
 
 # Change species to factor
 raw_data$spp_id <- as.factor(raw_data$spp_id)
+
+
+
+# Remove empty rows
+raw_data %>% 
+  mutate(across(where(is.character), ~ na_if(trimws(.), ""))) %>%
+  remove_empty("rows")
 
 # Save as .rds
 saveRDS(raw_data, "./data/raw/raw_historical_data.rds")
