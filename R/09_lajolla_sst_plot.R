@@ -27,10 +27,13 @@ filtered_data <- base_data %>%
   select(c(year, surf_temp_c)) %>% 
   na.omit()
 
+baseline_data = filtered_data %>% 
+  filter(year >= 1960)
+
 # Calculate baseline temp and anomalies --------
 
-# Establish baseline for 1916-2024
-baseline_sst <- mean(filtered_data$surf_temp_c)
+# Establish baseline for 1916-1960
+baseline_sst <- mean(baseline_data$surf_temp_c)
 
 # Get mean annual temp for 1916-2024
 graphing_temps <- filtered_data %>% 
@@ -91,16 +94,19 @@ graphing_temps %>%
   geom_col() +
   scale_fill_gradientn(colors = rev(col_strip))  +
   geom_hline(yintercept = 0, lty = 2) +
-  guides(fill = guide_colorbar(barwidth = 25, barheight = 1, title.position = "top", title.hjust = 0.5)) +
+  guides(fill = guide_colorbar(barwidth = 25, 
+                               barheight = 1, 
+                               title.position = "top", 
+                               title.hjust = 0.5)) +
   labs(
     x = "Year",
     y = NULL,
-    title = "Temperature Anomaly at La Jolla Pier",
-    subtitle = "Relative to average of 1916-2025 [°C]"
+    title = "Temperature Anomaly at La Jolla (°C)",
+    subtitle = "Relative to historical average (1916-1960)"
   ) +
   theme_classic() +
-  theme(axis.text=element_text(size=16),
+  theme(text=element_text(family="Lato"),
+        axis.text=element_text(size=16),
          axis.title=element_text(size=18),
         legend.position = "none")
 
-  
