@@ -42,9 +42,10 @@ ggplot(plot_data, aes(x = lat_group,
     x = NULL,  # No x-axis label
     y = "Number of Turtles per Report (by location)"
   ) +
+
   
   # Theme adjustments
-  theme_classic(base_size = 14) +
+  theme_classic(base_size = 18) +
   theme(
     text = element_text(family = "Lato"),  # Apply Lato to all text
     axis.text.x = element_blank(),  # Remove x-axis text completely
@@ -52,5 +53,6 @@ ggplot(plot_data, aes(x = lat_group,
     legend.position = "bottom",
     legend.text = element_text(size = 10),
     panel.grid.major.x = element_blank(),  # Remove vertical grid lines
-    plot.title = element_text(face = "bold")
-  )
+    plot.title = element_text(face = "bold"),
+    plot.margin = unit(c(5,5,5,5), "pt")
+  ) 

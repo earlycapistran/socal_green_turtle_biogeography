@@ -91,14 +91,16 @@ graphing_temps %>%
   geom_col() +
   scale_fill_gradientn(colors = rev(col_strip))  +
   geom_hline(yintercept = 0, lty = 2) +
-  theme(legend.position = "none") +
   guides(fill = guide_colorbar(barwidth = 25, barheight = 1, title.position = "top", title.hjust = 0.5)) +
   labs(
     x = "Year",
     y = NULL,
-    title = "Temperature Change at La Jolla Pier",
+    title = "Temperature Anomaly at La Jolla Pier",
     subtitle = "Relative to average of 1916-2025 [°C]"
   ) +
+  theme_classic() +
   theme(axis.text=element_text(size=16),
-         axis.title=element_text(size=18))
+         axis.title=element_text(size=18),
+        legend.position = "none")
+
   
