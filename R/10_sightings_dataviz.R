@@ -20,8 +20,8 @@ ggplot(plot_data, aes(x = num_turtles_numeric, y = lat_group, fill = lat_group))
                position = position_nudge(y = -0.2)) +
   # Color scheme - use colorblind-friendly palette
   scale_fill_manual(values = c("north" = "#f0a226", "south" = "#28a685")) +
-  scale_y_discrete(labels = c("north" = "Southern California\nBight", 
-                              "south" = "South of Southern\nCalifornia Bight")
+  scale_y_discrete(labels = c("north" = "Southern California Bight\n (>32.5°N)", 
+                              "south" = "Baja California Peninsula\n(<32.5°N)")
                    ) + 
   facet_grid(lat_group ~ ., 
              scales = "free_y",
