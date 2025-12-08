@@ -100,13 +100,13 @@ graphing_temps %>%
                                title.hjust = 0.5)) +
   labs(
     x = "Year",
-    y = NULL,
+    y = "Temperature Anomaly (°C)",
     title = "Temperature Anomaly at La Jolla (°C)",
     subtitle = "Relative to historical average (1916-1960)"
   ) +
   theme_classic() +
   theme(text=element_text(family="Lato"),
-        axis.text=element_text(size=16),
-         axis.title=element_text(size=18),
+        axis.text=element_text(size=18),
+        axis.title=element_text(size=22),
         legend.position = "none")
 
