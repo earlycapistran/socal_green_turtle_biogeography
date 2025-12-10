@@ -1,7 +1,7 @@
 # Exploratory data visualization
 
 # Load data and libraries
-data <- readRDS("./data/processed/green_means_full_chronology.rds.rds")
+data <- readRDS("./data/processed/green_means_full_chronology.rds")
 library("ggplot2")
 library("sf")
 library("dplyr")
@@ -15,26 +15,20 @@ green <- data %>%
          latitude, 
          longitude,
          location,
-         location_certainty,
          data_quality_index,
-         data_quality_cat,
          year,
-         decade,
-         state,
-         county_muni,
          lat_group) %>% 
   filter(!is.na(num_turtles_numeric)) %>% 
   filter(num_turtles_numeric != 0) %>% 
   filter(location != "not_reported") %>% 
   filter(location != "na") %>% 
-  filter(county_muni != "na") %>% 
   filter(year < 1935) %>% # Limit to commercial fishing years
   mutate(lat_group = relevel(lat_group, ref = "south"))
   
 
 # Datasets by latitude group (inside and outside SoCal Bight)
 green_scb <- green %>% 
-  filter(lat_group == "socal_bight")
+  filter(lat_group == "north")
 
 green_non_scb <- green %>% 
   filter(lat_group == "non_socal_bight")
@@ -119,3 +113,4 @@ hist <- ggplot(green, aes(x = num_turtles_numeric,
   facet_grid(lat_group ~.) +
   theme_classic()
 hist
+
