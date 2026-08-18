@@ -35,7 +35,7 @@ p <- ggplot(plot_data, aes(x = num_turtles_numeric, y = lat_group, fill = lat_gr
     text = element_text(family = "Lato"),
     legend.position = "none",
     axis.title = element_text(face = "bold"),
-    panel.grid.major.x = element_line(color = "gray90", size = 0.3),
+    panel.grid.major.x = element_line(color = "gray90", linewidth = 0.3),
     strip.background = element_blank(),  # removes facet background
     strip.text = element_blank()         # removes facet text
   )
