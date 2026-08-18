@@ -48,7 +48,8 @@ green_quant <- green_data %>%
   filter(location != "na") %>% 
   filter(county_muni != "na") %>% 
   filter(year < 1940) %>%  # Limit to commercial fishing years 
-  filter(latitude < 35) # Remove values north of SoCal Bight
+  filter(latitude < 35) %>%  # Remove values north of SoCal Bight
+  filter(data_quality_cat == "high") # Retain only high-quality records (modified PRISMA / DQI screening)
 
 # Save
 saveRDS(green_quant, "./data/processed/green_quant.rds")

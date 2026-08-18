@@ -58,8 +58,12 @@ length_df <- processed_data %>% # Wrangle length to cm in a separate dataframe
   mutate(length_cm = ifelse(length_cm == 0, NA, length_cm)) # remove placeholder 0s
 
 # Add to the main dataframe
+# FIX: previously only length_cm was copied back from processed_data,
+# silently dropping num_turtles_numeric and weight_kg. Restored below.
 hist_data <- hist_data %>% 
   mutate(length_cm = length_df$length_cm) %>%
+  mutate(num_turtles_numeric = processed_data$num_turtles_numeric) %>%
+  mutate(weight_kg = processed_data$weight_kg) %>%
   mutate(length_ft_inches = ifelse(length_ft_inches == "0'0", 
                                    NA, 
                                    length_ft_inches)) # Remove placeholder 0s
@@ -71,4 +75,3 @@ hist_data <- hist_data %>%
 # Save ------------------------------------------------
 write.csv(hist_data, "./data/processed/full_data_historical_round1")
 saveRDS(hist_data, "./data/processed/full_data_historical_round1.rds")
-
