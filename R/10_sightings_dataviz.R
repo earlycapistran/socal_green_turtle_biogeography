@@ -40,5 +40,5 @@ p <- ggplot(plot_data, aes(x = num_turtles_numeric, y = lat_group, fill = lat_gr
     strip.text = element_blank()         # removes facet text
   )
 
-p
-ggsave("./plots/sightings_dotplot.png", plot = p, width = 8, height = 5, dpi = 300)
+ggsave("./plots/sightings_dotplot.png", plot = p, width = 8, height = 5, 
+       dpi = 300, device = ragg::agg_png)
