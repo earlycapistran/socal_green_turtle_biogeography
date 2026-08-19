@@ -22,7 +22,10 @@ historical <- historical %>%
   mutate(weight_dummy = ifelse(is.na(weight_lb), 0, 1)) %>% 
   mutate(length_dummy = ifelse(is.na(length_ft_inches), 0, 1)) %>% 
   mutate(habitat_dummy = ifelse(habitat == "not_reported", 0, 1)) %>% 
-  mutate(narrative_detail = as.numeric(narrative_detail)) %>% 
+  mutate(narrative_detail = case_when(
+    narrative_detail == "0" ~ 1,
+    narrative_detail == "1" ~ 2,
+    narrative_detail == "2" ~ 3)) %>%
   mutate(num_turtles_dummy = case_when(
     num_turtles == "not_reported" ~ 0,
     num_turtles == "cargo" ~ 1,
